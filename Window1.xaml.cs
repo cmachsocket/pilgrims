@@ -29,7 +29,7 @@ namespace pilgrims
         {
             //MessageBox.Show("changed");
             //pil.common.addxb()
-            string[] tmp = combo.SelectedItem.ToString().Split('_');
+            string[] tmp = combo.SelectedItem.ToString().Split(' ');
             var i = int.Parse(tmp[0]);
             if (common.paip[1, i] == 0)
             {

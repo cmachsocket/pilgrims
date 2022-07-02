@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Threading;
+using System.Net.Sockets;
 
 namespace pilgrims
 {
@@ -19,6 +20,7 @@ namespace pilgrims
         public static TextBox zhu;
         public int port;
         public string host, tmpname1 = "", tmpname2 = "";
+        public static Socket c;
         public MainWindow()
         {
             /*
@@ -37,18 +39,8 @@ namespace pilgrims
             //调试代码结束
             Title = "pilgrims" + common.BAN + " made by cmach_socket";
             InitializeComponent();
-            ThreadStart childref = new ThreadStart(socketlis);
-            Thread thread = new Thread(childref);
-            thread.Start();
             common.init();
 
-        }
-        public static void socketlis()
-        {
-            while (true)
-            {
-
-            }
         }
         public static void flip()
         {
@@ -84,6 +76,7 @@ namespace pilgrims
             if (common.mode != 0 && common.mode != 3)
             {
                 common.clean("状态");
+                //common.mode = 1;
                 flip();
             }
         }
@@ -169,17 +162,104 @@ namespace pilgrims
             }
             if (common.mode != 0)
             {
+                string me="";
+                common.sendtext = "对方回合";
+                common.mode = 0;
+                flip();
+                //begin
+                c.Receive(common.get_b);
+                common.blong = (int)(common.get_b[1] | common.get_b[2] << 8 | common.get_b[3] << 16 | common.get_b[4] << 24);
+                common.ilong = common.btoi(ref common.put_i, common.get_b, common.blong);
+                int j;
+                for (j = 2; common.put_i[j] != -6; j++)
+                {
+                    int i = common.put_i[j];
+                    if (i == 1)
+                    {
+                        j++;
+                        i = common.put_i[j];
+                        if (common.paip[1, i] >= 1000 && common.paip[1, i] < 2000)
+                        {
+                            me += "使用了" + common.fslist[i - 1000].name + "\n";
+                        }
+                        else if (common.paip[1, i] >= 2000)
+                        {
+                            me += "购买了" + common.wqlist[i - 2000].name + "\n";
+                        }
+                        else
+                        {
+                            me += "购买了" + common.xblist[i].name + "\n";
+                        }
+                    }
+                    else if (i == 2)
+                    {
+                        j++;
+                        i = common.put_i[j];
+                        if (common.paip[1, i] >= 2000)
+                        {
+                            me += common.wqlist[i - 2000].name;
+                        }
+                        else
+                        {
+                            me += common.xblist[i].name;
+                        }
+                        j++;
+                        i = common.put_i[j];
+                        me += "攻击了";
+                        if (common.paip[1, i] >= 2000)
+                        {
+                            me += common.wqlist[i - 2000].name + "\n";
+                        }
+                        else
+                        {
+                            me += common.xblist[i].name + "\n";
+                        }
+                    }
+                    for(int f = 0; f <= common.MAXPLAY; f++)
+                    {
+                        common.pxue[f] = common.put_i[++j];
+                        common.ndian[f] = common.put_i[++j];
+                        common.pwuqi[f] = common.wqlist[common.put_i[++j]].copy();
+                        common.pwuqi[f].naiju = common.put_i[++j];
+                    }
+                   
+                    while( j < common.ilong)
+                    {
+                        int a=common.put_i[++j],b=common.put_i[++j],c=common.put_i[++j];
+                        common.bing[a, b, c].gongji = common.put_i[++j];
+                        common.bing[a, b, c].fanci = common.put_i[++j];
+                        common.bing[a, b, c].xue = common.put_i[++j];
+                        common.bing[a, b, c].gjcishu = common.put_i[++j];
+                        common.bing[a, b, c].shecheng = common.put_i[++j];
+                        common.bing[a, b, c].dun = common.put_i[++j];
+                        common.bing[a, b, c].lingjcs = common.put_i[++j];
+                        common.bing[a, b, c].dianshu = common.put_i[++j];
+                        common.bing[a, b, c].xixue = common.put_i[++j];
+                        common.bing[a, b, c].boolpojia = common.put_i[++j];
+                        common.bing[a, b, c].paishu = common.put_i[++j];
+                        common.bing[a, b, c].qianfeng = common.put_i[++j];
+                        common.bing[a, b, c].boolji = common.put_i[++j];
+                        common.bing[a, b, c].bihu = common.put_i[++j];
+                        common.bing[a, b, c].dianji = common.put_i[++j];
+                        common.bing[a, b, c].bian = common.put_i[++j];
+                        common.bing[a, b, c].maxxue = common.put_i[++j];
+                        common.bing[a, b, c].tmp= common.put_i[++j];
+                    }
+                    
+                }
+                //end
+                common.mode = 1;
                 common.ndian[1] += 10;
                 common.usefa[1] = 0;
                 common.usewu[1] = 0;
-                //do something
-                common.mode = 0;
                 common.useji();
-                flip();
+
             }
         }
 
-
+        //mode 0 对方回合
+        //mode 1 空闲中
+        //mode 2
         private void bnt_cil(object sender, MouseButtonEventArgs e)
         {
 
