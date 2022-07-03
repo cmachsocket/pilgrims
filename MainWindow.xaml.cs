@@ -73,7 +73,7 @@ namespace pilgrims
 
         private void seeMouseDown(object sender, RoutedEventArgs e)
         {
-            if (common.mode != 0 && common.mode != 3)
+            if (common.mode != 0)
             {
                 common.clean("状态");
                 //common.mode = 1;
@@ -259,7 +259,8 @@ namespace pilgrims
 
         //mode 0 对方回合
         //mode 1 空闲中
-        //mode 2
+        //mode 2 选择攻击
+        //mode 3 选择技能
         private void bnt_cil(object sender, MouseButtonEventArgs e)
         {
 
