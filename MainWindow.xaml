@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:pilgrims"
         mc:Ignorable="d"
-        Height="1024" Width="1280" MinWidth="1280" MinHeight="1024" MaxWidth="1280" MaxHeight="1024" Loaded="form1_Loaded" FontFamily="UD Digi Kyokasho NK-R">
+        Height="1024" Width="1280" MinWidth="1280" MinHeight="1024" MaxWidth="1280" MaxHeight="1024" Loaded="form1_Loaded" FontFamily="UD Digi Kyokasho NK-R" Closing="exiting">
     <Grid x:Name="Grid1">
         <Grid.RowDefinitions>
         </Grid.RowDefinitions>
@@ -18,25 +18,28 @@
         <Button x:Name="buy" Content="购买" HorizontalAlignment="Left" Margin="1140,359,0,0" VerticalAlignment="Top" Height="50" Width="80" Click="buyMouseDown"/>
         <Button x:Name="gongj" Content="攻击" HorizontalAlignment="Left" Margin="1140,452,0,0" VerticalAlignment="Top" Height="50" Width="80" Click="gongjMouseDown"/>
         <Button x:Name="backk" Content="结束" HorizontalAlignment="Left" Margin="1140,544,0,0" VerticalAlignment="Top" Height="50" Width="80" Click="backMouseDown"/>
+        <TextBox x:Name="shux" HorizontalAlignment="Left" Height="211" Margin="1090,738,0,0" VerticalAlignment="Top" Width="180" TextChanged="TextBox_TextChanged" TextWrapping="Wrap" TextAlignment="Center" IsReadOnly="True"/>
         <Grid x:Name="Grid2" Width="1280" Height="56" HorizontalAlignment="Center" VerticalAlignment="Top">
             <Grid.Background>
                 <SolidColorBrush Color="#19191E" Opacity="0"/>
             </Grid.Background>
-            <Button x:Name="na1" HorizontalAlignment="Left" Margin="10,0,0,0" Content="No name" VerticalAlignment="Center" Width="180" Height="36" FontSize="24" MouseDown="bnt_cil"/>
+            <Button x:Name="na1" HorizontalAlignment="Left" Margin="10,0,0,0" Content="No name" VerticalAlignment="Center" Width="180" Height="36" FontSize="24" MouseLeftButtonDown="bnt_cil" MouseEnter="bnt_enter"/>
             <TextBox x:Name="xu1" HorizontalAlignment="Left" Margin="226,0,0,0" TextWrapping="Wrap" Text="HP:0" VerticalAlignment="Center" Width="166" Height="36" TextChanged="TextBox_TextChanged" FontSize="24" TextAlignment="Center" IsReadOnly="True"/>
             <TextBox x:Name="di1" HorizontalAlignment="Left" Margin="444,0,0,0" TextWrapping="Wrap" Text="COST:0" VerticalAlignment="Center" Width="166" Height="36" TextChanged="TextBox_TextChanged" FontSize="24" TextAlignment="Center" IsReadOnly="True"/>
-            <Button x:Name="w1" HorizontalAlignment="Left" Margin="687,0,0,0"  Content="武器:空" VerticalAlignment="Center" Width="166" Height="36" MouseDown="bnt_cil"/>
+            <Button x:Name="w1" HorizontalAlignment="Left" Margin="687,0,0,0"  Content="武器:空" VerticalAlignment="Center" Width="166" Height="36" MouseLeftButtonDown="bnt_cil" MouseEnter="bnt_enter"/>
+
         </Grid>
         <Grid x:Name="Grid3" Margin="0,56,0,502">
         </Grid>
         <Line X1="0" Y1="505" X2="1280" Y2="505" Stroke="Yellow" StrokeThickness="3"/>
         <Grid x:Name="Grid4" Margin="0,508,0,56">
+
         </Grid>
         <Grid x:Name="Grid5" Width="1280" Height="56" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,949,0,0">
-            <Button x:Name="na2" HorizontalAlignment="Left" Margin="10,0,0,0"  Content="No name" VerticalAlignment="Top" Width="180" Height="36"  FontSize="24" MouseDown="bnt_cil"/>
+            <Button x:Name="na2" HorizontalAlignment="Left" Margin="10,0,0,0"  Content="No name" VerticalAlignment="Top" Width="180" Height="36"  FontSize="24" MouseLeftButtonDown="bnt_cil" MouseEnter="bnt_enter" />
             <TextBox x:Name="xu2" HorizontalAlignment="Left" Margin="226,0,0,0" TextWrapping="Wrap" Text="HP:0" VerticalAlignment="Top" Width="166" Height="36" TextChanged="TextBox_TextChanged" FontSize="24" TextAlignment="Center" IsReadOnly="True"/>
             <TextBox x:Name="di2" HorizontalAlignment="Left" Margin="444,0,0,0" TextWrapping="Wrap" Text="COST:0" VerticalAlignment="Top" Width="167" Height="36" TextChanged="TextBox_TextChanged" FontSize="24" TextAlignment="Center" IsReadOnly="True"/>
-            <Button x:Name="w2" HorizontalAlignment="Left" Margin="687,-2,0,0"   Content="武器:空" VerticalAlignment="Top" Width="166" Height="38" MouseDown="bnt_cil"/>
+            <Button x:Name="w2" HorizontalAlignment="Left" Margin="687,-2,0,0"   Content="武器:空" VerticalAlignment="Top" Width="166" Height="38" MouseLeftButtonDown="bnt_cil" MouseEnter="bnt_enter"/>
         </Grid>
     </Grid>
 
