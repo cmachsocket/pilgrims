@@ -1,4 +1,5 @@
 ﻿//using Microsoft.VisualBasic;
+using Microsoft.VisualBasic;
 using pil;
 using System;
 using System.IO;
@@ -30,13 +31,16 @@ namespace pilgrims
         public static byte[] buf2 = new byte[1024];
         public MainWindow()
         {
-
-            //host = Interaction.InputBox("输入IP地址", "pilgrims", "");
-            //port = int.Parse(Interaction.InputBox("输入连接端口", "pilgrims", ""));
+            byte[] exchange = new byte[1024];
+            host = Interaction.InputBox("输入IP地址", "pilgrims", "");
+            port = int.Parse(Interaction.InputBox("输入连接端口", "pilgrims", ""));
+            if(host=="" || port== 0){
+                Environment.Exit(0);
+            }
             //调试代码区
-            host = "127.0.0.1";
-            port = 13579;
-            tmpname1 = "114514";
+            //host = "127.0.0.1";
+            //port = 13579;
+            //tmpname1 = "114514";
             //
             IPAddress ip = IPAddress.Parse(host);
             IPEndPoint ipe = new IPEndPoint(ip, port);//把ip和端口转化为IPEndPoint实例
@@ -45,18 +49,18 @@ namespace pilgrims
             
             c.Receive(buf1);
             common.t_fir = buf1[0];
-            //tmpname1 = Interaction.InputBox("输入名称", "pilgrims", "");
+            tmpname1 = Interaction.InputBox("输入名称", "pilgrims", "");
             common.p[1] = tmpname1;
             Array.Clear(buf1, 0, buf1.Length);
-            buf1 = System.Text.UnicodeEncoding.Default.GetBytes(tmpname1);
+            int ji = 0;
+            exchange = System.Text.UnicodeEncoding.Default.GetBytes(tmpname1);
+            for (int i = 4; ji < exchange.Length; i++)
+            {
+                buf1[i] = exchange[ji++];
+            }
             c.Send(buf1);
             c.Receive(buf2);
             common.p[0] = System.Text.UnicodeEncoding.Default.GetString(buf2);
-
-            //调试代码区
-            //common.mode = 1;
-            //common.t_fir = 1;
-            //调试代码结束
             Title = "pilgrims" + common.BAN + " made by cmach_socket";
             InitializeComponent();
             common.initpai();
@@ -89,10 +93,12 @@ namespace pilgrims
             byte[] btmp = new byte[1024];
             byte[] tmpb = new byte[1024];
             byte[] exchange = new byte[1024];
+            int ji = 0;
             exchange = System.Text.UnicodeEncoding.Default.GetBytes(common.fatext);
-            for(int i = 1; i < exchange.Length; i++)
+            common.fatext = "";
+            for(int i = 4; ji < exchange.Length; i++)
             {
-                btmp[i] = exchange[i];
+                btmp[i] = exchange[ji++];
             }
             c.Send(btmp);
             int l = 4;
@@ -145,7 +151,7 @@ namespace pilgrims
                 }
             }
             common.itob(ref common.get_b, sendint, l);
-            //c.Receive(tmpb);
+            common.get_b[0] = 1;
             c.Send(common.get_b);
             if (common.pxue[1] == 0 || common.pxue[0] == 0)
             {
@@ -166,9 +172,12 @@ namespace pilgrims
                 Array.Clear(btmp, 0, btmp.Length - 1);
                 Array.Clear(sendint, 0, sendint.Length - 1);
                 c.Receive(btmp);
-                //c.Send(tmpb);
                 common.prtext = System.Text.UnicodeEncoding.Default.GetString(btmp);
                 c.Receive(common.get_b);
+                if (common.get_b[0] == 0)
+                {
+                    c.Receive(common.get_b);
+                }
                 common.btoi(ref sendint, common.get_b, common.get_b.Length - 1);
                 int l = 4;
                 common.ndian[0] = sendint[1]; common.ndian[1] = sendint[2]; common.pxue[0] = sendint[3]; common.pxue[1] = sendint[4];
@@ -218,6 +227,11 @@ namespace pilgrims
                             if (common.bing[k, i, j].bian != 0)
                             {
                                 common.vis[k, i, j] = 1;
+                                common.bing[k, i, j].a ^= 1;
+                            }
+                            else
+                            {
+                                common.vis[k, i, j] = 0;
                             }
                         }
                     }
@@ -225,7 +239,8 @@ namespace pilgrims
                 flip();
                 if (common.pxue[1] == 0 || common.pxue[0] == 0)
                 {
-                    gameover(common.pxue[0] == 0 ? 0 : 1);
+                    gameover(common.pxue[0] == 0 ? 1 : 0);
+
                 }
                 if (sendint[0] == 1)
                 {
@@ -292,7 +307,7 @@ namespace pilgrims
             }
             if (common.mode == 3 && common.mode == 2)
             {
-                MessageBox.Show("请先进行完之前的操作", "pilgrims");
+                common.prtext = "请先进行完之前的操作";
                 return;
             }
             if (common.mode == 1)
@@ -340,14 +355,14 @@ namespace pilgrims
             }
             if (common.mode == 3)
             {
-                MessageBox.Show("请先进行完之前的操作", "pilgrims");
+                common.prtext = "请先进行完之前的操作";
                 return;
             }
             if (common.mode != 0)
             {
                 if (common.huihes == 1)
                 {
-                    MessageBox.Show("第一回合无法攻击", "pilgrims");
+                    common.prtext = "第一回合无法攻击";
                     return;
                 }
                 common.setmode(2, common.gj1, "请选择攻击对象");
@@ -384,7 +399,7 @@ namespace pilgrims
             }
             if (common.mode == 3)
             {
-                MessageBox.Show("请先进行完之前的操作", "pilgrims");
+                common.prtext = "请先进行完之前的操作";
                 return;
             }
             if (common.mode != 0 || common.huihes == 0)
@@ -427,7 +442,8 @@ namespace pilgrims
                 shux.Text = "空";
                 return;
             }
-            string mes = "血量:" + tbing.xue.ToString() +
+            string mes = (common.p[a.a]).ToString() + "的" + (a.b).ToString()+"排第"+(a.c).ToString()+"个"+
+                "\n血量:" + tbing.xue.ToString() +
                 "\n攻击:" + tbing.gongji.ToString() +
                 "\n反刺:" + tbing.fanci.ToString() +
                 "\n剩余攻击次数:" + tbing.lingjcs.ToString() +
@@ -454,7 +470,7 @@ namespace pilgrims
             {
                 if (common.mode == 0)
                 {
-                    MessageBox.Show( "对方回合无法攻击", "pilgrims");
+                    common.prtext = "对方回合无法攻击";
                     return;
                 }
 
@@ -497,9 +513,9 @@ namespace pilgrims
         {
             while (true)
             {
-                if (common.prtext != "" && common.prtext[0]!='\0')
+                if (common.prtext != "")
                 {
-                    System.Windows.Forms.MessageBox.Show(common.prtext, "pilgrims");
+                    prt.Dispatcher.Invoke(new Action(() => { prt.Text = common.prtext; }));
                     common.prtext = "";
                 }
             }
@@ -564,13 +580,6 @@ namespace pilgrims
                     bnts[0, i, j] = bnt;
                 }
             }
-            //调试代码区
-            //bnts[1, 1, 1].Content = common.xblist[1].name;
-            //bnts[0, 1, 1].Content = common.xblist[1].name;
-            //common.addxb(19, 1);
-            //common.addxb(1, 0);
-            //flip();
-            //common.bing[1, 1, 1].lingjcs = 1;
             if (common.t_fir == 1)
             {
                 ThreadStart startbackget = new ThreadStart(stratbackstart);

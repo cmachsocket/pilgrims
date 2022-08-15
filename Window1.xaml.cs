@@ -31,7 +31,7 @@ namespace pilgrims
             var i = int.Parse(tmp[0]);
             if (common.paip[1, i] == 0)
             {
-                MessageBox.Show("此队伍格子没有有效士员编号", "pilgrims");
+                common.prtext = "此队伍格子没有有效士员编号";
                 common.clean("状态");
                 return;
             }
@@ -39,13 +39,13 @@ namespace pilgrims
             {
                 if (common.ndian[1] - common.fslist[common.paip[1, i] - 1000].dianshu < 0)
                 {
-                    MessageBox.Show("点数不够", "pilgrims");
+                    common.prtext = "点数不够";
                     common.clean("状态");
                     return;
                 }
                 if (common.usefa[1] != 0)
                 {
-                    MessageBox.Show("本回合已经使用过法术", "pilgrims");
+                    common.prtext = "本回合已经使用过法术";
                     common.clean("状态");
                     return;
                 }
@@ -56,7 +56,7 @@ namespace pilgrims
             {
                 if (common.ndian[1] - common.wqlist[common.paip[1, i] - 2000].dianshu < 0)
                 {
-                    MessageBox.Show("点数不够", "pilgims");
+                    common.prtext = "点数不够";
                     common.clean("状态");
                     return;
                 }
@@ -67,13 +67,13 @@ namespace pilgrims
             {
                 if (common.ndian[1] - common.xblist[common.paip[1, i]].dianshu < 0)
                 {
-                    MessageBox.Show("点数不够", "pilgrims");
+                    common.prtext = "点数不够";
                     common.clean("状态");
                     return;
                 }
                 if (common.k[1, common.xblist[common.paip[1, i]].paishu] >= common.MAXN)
                 {
-                    MessageBox.Show("此牌拥有太多士员", "pilgrims");
+                    common.prtext = "此牌拥有太多士员";
                     common.clean("状态");
                     return;
                 }

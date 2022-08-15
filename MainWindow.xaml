@@ -12,6 +12,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        <TextBox x:Name="prt" HorizontalAlignment="Left" Margin="1090,61,0,0" TextWrapping="Wrap" Text="消息" VerticalAlignment="Top" Width="180" Height="100" TextChanged="TextBox_TextChanged" TextAlignment="Center" IsReadOnly="True"/>
         <TextBox x:Name="tips" HorizontalAlignment="Left" Margin="1090,187,0,0" TextWrapping="Wrap" Text="操作" VerticalAlignment="Top" Width="180" Height="36" TextChanged="TextBox_TextChanged" FontSize="24" TextAlignment="Center" IsReadOnly="True"/>
         <TextBox x:Name="zhuang" HorizontalAlignment="Left" Margin="1090,635,0,0" TextWrapping="Wrap" Text="状态" VerticalAlignment="Top" Width="180" Height="75" TextChanged="TextBox_TextChanged" FontSize="24" TextAlignment="Center" IsReadOnly="True"/>
         <Button x:Name="see" Content="取消" HorizontalAlignment="Left" Margin="1140,262,0,0" VerticalAlignment="Top" Height="50" Width="80" Click="seeMouseDown"/>
