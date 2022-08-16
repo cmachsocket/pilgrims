@@ -604,7 +604,8 @@ namespace pilgrims
             else
             {
                 common.mode = 1;
-                common.huihes++; 
+                common.huihes++;
+                flip();
             }
 
         }
