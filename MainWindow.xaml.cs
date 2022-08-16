@@ -1,5 +1,4 @@
-﻿//using Microsoft.VisualBasic;
-using Microsoft.VisualBasic;
+﻿using Microsoft.VisualBasic;
 using pil;
 using System;
 using System.IO;
@@ -107,12 +106,18 @@ namespace pilgrims
             {
                 sendint[0] = 1;
             }
+            sendint[++l] = common.dead;
             for (int i = 0; i <= 1; i++)
             {
                 sendint[++l] = common.pwuqi[i].naiju;
                 sendint[++l] = common.pwuqi[i].dianshu;
                 sendint[++l] = common.pwuqi[i].bian;
                 sendint[++l] = common.pwuqi[1].p;
+                sendint[++l] = common.kqian[i];
+                for(int j = 0; j <= common.MAXP-1; j++)
+                {
+                    sendint[++l] = common.k[i, j]; 
+                }
             }
             for (int k = 0; k <= 1; k++)
             {
@@ -151,8 +156,16 @@ namespace pilgrims
                 }
             }
             common.itob(ref common.get_b, sendint, l);
-            common.get_b[0] = 1;
             c.Send(common.get_b);
+            common.get_b[0] = 1;
+            while (tmpb[0] == 0)
+            {
+                c.Receive(tmpb);
+                if (tmpb[0] == 0)
+                {
+                    c.Send(common.get_b);
+                }   
+            }
             if (common.pxue[1] == 0 || common.pxue[0] == 0)
             {
 
@@ -181,14 +194,20 @@ namespace pilgrims
                 common.btoi(ref sendint, common.get_b, common.get_b.Length - 1);
                 int l = 4;
                 common.ndian[0] = sendint[1]; common.ndian[1] = sendint[2]; common.pxue[0] = sendint[3]; common.pxue[1] = sendint[4];
+                common.dead = sendint[++l];
                 for (int i = 1; i >= 0; i--)
                 {
                     common.pwuqi[i].naiju = sendint[++l];
                     common.pwuqi[i].dianshu = sendint[++l];
                     common.pwuqi[i].bian = sendint[++l];
                     common.pwuqi[i].p = sendint[++l];
-                    if(common.pwuqi[i].bian > 0)
+                    common.kqian[i] = sendint[++l];
+                    if (common.pwuqi[i].bian > 0)
                         common.pwuqi[i].name = common.FNA[common.pwuqi[i].bian - 1000];
+                    for (int j = 0; j <= common.MAXP - 1; j++)
+                    {
+                         common.k[i, j] = sendint[++l];
+                    }
                 }
                 for (int k = 1; k >= 0; k--)
                 {
@@ -226,12 +245,7 @@ namespace pilgrims
                             common.bing[k, i, j].name = common.NAME[common.bing[k, i, j].bian > 0 ? common.bing[k, i, j].bian : -common.bing[k, i, j].bian];
                             if (common.bing[k, i, j].bian != 0)
                             {
-                                common.vis[k, i, j] = 1;
                                 common.bing[k, i, j].a ^= 1;
-                            }
-                            else
-                            {
-                                common.vis[k, i, j] = 0;
                             }
                         }
                     }
@@ -259,7 +273,7 @@ namespace pilgrims
 
 
                         bnts[i, j, l].Dispatcher.Invoke(new Action(() => { bnts[i, j, l].Content = "空"; }));//抄的,说是什么线程安全
-                        if (common.vis[i, j, l] != 0)
+                        if (common.bing[i, j, l].bian != 0)
                         {
                             bnts[i, j, l].Dispatcher.Invoke(new Action(() => { bnts[i, j, l].Content = common.bing[i, j, l].name; }));
                         }
