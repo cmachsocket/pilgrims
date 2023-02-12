@@ -1,13 +1,17 @@
 ﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.Logging;
 using pil;
 using System;
 using System.IO;
+using System.IO.Pipes;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace pilgrims
 {
@@ -22,44 +26,67 @@ namespace pilgrims
         public static Button[] w = new Button[common.MAXPLAY];
         public static Button[] na = new Button[common.MAXPLAY];
         public static TextBox zhu;
-        public int port;
-        public string host, tmpname1 = "", tmpname2 = "";
+        public static string port;
+        public string host;
         public static Socket c;
         public static RoutedEventArgs ee;
-        public static byte[] buf1 = new byte[1024];
-        public static byte[] buf2 = new byte[1024];
+        public static int ms;
+        
+        public static void sendd(string msg)//发送给python进行传输
+        {
+            ms++;
+            StreamWriter sr = new StreamWriter("n"+ms.ToString()+".txt");
+            sr.Write(msg);
+            sr.Close();        
+        }
+        public static string recvv()//从python那边接收消息
+        {
+            ms++;
+            StreamReader sr = null;
+            while (true)//等待消息
+            {
+                if (File.Exists("n" + ms.ToString() + ".txt"))
+                {
+                    //有消息,但不知是否能访问(因为对方可能在写入
+                    int b = 1;
+                    while (b == 1)
+                    {
+                        try//能够访问到消息
+                        {
+                            b = 0;//退出
+                            sr = new StreamReader("n" + ms.ToString() + ".txt");
+                        }
+                        catch { b = 1; }//不能访问
+                    }
+
+                    break;
+                }
+            }
+            //处理
+            string msg=sr.ReadToEnd();
+            sr.Close();
+            File.Delete("n" + ms.ToString() + ".txt");
+            return msg;
+           
+        }
         public MainWindow()
         {
-            byte[] exchange = new byte[1024];
+            /*
+                在这里添加启动python            
+            */
             host = Interaction.InputBox("输入IP地址", "pilgrims", "");
-            port = int.Parse(Interaction.InputBox("输入连接端口", "pilgrims", ""));
-            if(host=="" || port== 0){
-                Environment.Exit(0);
-            }
+            port = Interaction.InputBox("输入连接端口", "pilgrims", "");
             //调试代码区
             //host = "127.0.0.1";
             //port = 13579;
             //tmpname1 = "114514";
             //
-            IPAddress ip = IPAddress.Parse(host);
-            IPEndPoint ipe = new IPEndPoint(ip, port);//把ip和端口转化为IPEndPoint实例
-            c = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//创建一个Socket
-            c.Connect(ipe);//连接到服务器
-            
-            c.Receive(buf1);
-            common.t_fir = buf1[0];
-            tmpname1 = Interaction.InputBox("输入名称", "pilgrims", "");
-            common.p[1] = tmpname1;
-            Array.Clear(buf1, 0, buf1.Length);
-            int ji = 0;
-            exchange = System.Text.UnicodeEncoding.Default.GetBytes(tmpname1);
-            for (int i = 4; ji < exchange.Length; i++)
-            {
-                buf1[i] = exchange[ji++];
-            }
-            c.Send(buf1);
-            c.Receive(buf2);
-            common.p[0] = System.Text.UnicodeEncoding.Default.GetString(buf2);
+            sendd(host);
+            sendd(port.ToString());
+            common.t_fir=int.Parse(recvv());
+            common.p[1] = Interaction.InputBox("输入名称", "pilgrims", "");
+            sendd(common.p[1]);
+            common.p[0] = recvv();
             Title = "pilgrims" + common.BAN + " made by cmach_socket";
             InitializeComponent();
             common.initpai();
@@ -86,27 +113,20 @@ namespace pilgrims
             while (common.prtext != "") ;
             Environment.Exit(0);
         }
-        public static void sendmsg(int x)
+        public static void sendmsg(int x)//发送消息
         {
-            int[] sendint = new int[common.MAXI];
-            byte[] btmp = new byte[1024];
-            byte[] tmpb = new byte[1024];
-            byte[] exchange = new byte[1024];
+            int[] sendint = new int[common.MAXI];//要发送的棋盘一维化
+            string exchange = common.fatext;//copy要发送的信息
             int ji = 0;
-            exchange = System.Text.UnicodeEncoding.Default.GetBytes(common.fatext);
             common.fatext = "";
-            for(int i = 4; ji < exchange.Length; i++)
-            {
-                btmp[i] = exchange[ji++];
-            }
-            c.Send(btmp);
             int l = 4;
             sendint[1] = common.ndian[1]; sendint[2] = common.ndian[0]; sendint[3] = common.pxue[1]; sendint[4] = common.pxue[0];
+            //棋盘前四位分别是双方点数和血量
             if (x == 0)
             {
-                sendint[0] = 1;
+                sendint[0] = 1;//第0位是是否结束 0结束
             }
-            sendint[++l] = common.dead;
+            sendint[++l] = common.dead;//死亡的士兵
             for (int i = 0; i <= 1; i++)
             {
                 sendint[++l] = common.pwuqi[i].naiju;
@@ -118,7 +138,7 @@ namespace pilgrims
                 {
                     sendint[++l] = common.k[i, j]; 
                 }
-            }
+            }//双方武器状况
             for (int k = 0; k <= 1; k++)
             {
                 for (int i = 1; i <= common.MAXP - 1; i++)
@@ -154,44 +174,26 @@ namespace pilgrims
                         }
                     }
                 }
-            }
-            common.itob(ref common.get_b, sendint, l);
-            c.Send(common.get_b);
-            common.get_b[0] = 1;
-            while (tmpb[0] == 0)
-            {
-                c.Receive(tmpb);
-                if (tmpb[0] == 0)
-                {
-                    c.Send(common.get_b);
-                }   
-            }
+            }//大棋盘
+            sendd(exchange);
+            sendd(common.tostr(sendint));
+            //是否死亡
             if (common.pxue[1] == 0 || common.pxue[0] == 0)
             {
 
                 gameover(common.pxue[0] == 0 ? 1 : 0);
             }
-            Array.Clear(common.get_b, 0, common.get_b.Length - 1);
         }
-        public static void recvmsg()
+        public static void recvmsg()//接收消息
         {
             int[] sendint = new int[common.MAXI];
             
             while (true)
             {
-                byte[] btmp = new byte[1024];
-                byte[] tmpb = new byte[1024];
-                Array.Clear(common.get_b, 0, common.get_b.Length - 1);
-                Array.Clear(btmp, 0, btmp.Length - 1);
                 Array.Clear(sendint, 0, sendint.Length - 1);
-                c.Receive(btmp);
-                common.prtext = System.Text.UnicodeEncoding.Default.GetString(btmp);
-                c.Receive(common.get_b);
-                if (common.get_b[0] == 0)
-                {
-                    c.Receive(common.get_b);
-                }
-                common.btoi(ref sendint, common.get_b, common.get_b.Length - 1);
+                common.prtext=recvv();
+                common.toint(recvv(), ref sendint);
+                //解析消息
                 int l = 4;
                 common.ndian[0] = sendint[1]; common.ndian[1] = sendint[2]; common.pxue[0] = sendint[3]; common.pxue[1] = sendint[4];
                 common.dead = sendint[++l];
@@ -251,11 +253,13 @@ namespace pilgrims
                     }
                 }
                 flip();
+                //判断死亡
                 if (common.pxue[1] == 0 || common.pxue[0] == 0)
                 {
                     gameover(common.pxue[0] == 0 ? 1 : 0);
 
                 }
+                //对方结束了回合
                 if (sendint[0] == 1)
                 {
                     return;
