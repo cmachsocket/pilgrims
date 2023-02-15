@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-
+using System.Diagnostics;
 namespace pilgrims
 {
     /// <summary>
@@ -69,20 +69,47 @@ namespace pilgrims
             return msg;
            
         }
-        public MainWindow()
+        public static void cmduse(string str)
         {
             /*
-                在这里添加启动python            
+            ThreadStart startbackget = new ThreadStart(stratbackstart);
+            Thread startback = new Thread(startbackget);
+            startback.Start();
             */
-            host = Interaction.InputBox("输入IP地址", "pilgrims", "");
+            Thread sb = new Thread(new ParameterizedThreadStart(sys));
+            sb.Start(str);
+        }
+
+        public static void sys(object s)
+        {
+            System.Diagnostics.Process.Start("python\\\\python.exe", s.ToString());
+            //MessageBox.Show(p.StandardOutput.ReadToEnd());
+
+        }
+        public MainWindow()
+        {
+            int flag;
+            if(MessageBox.Show("是否作为服务器?", "piligrims", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            {
+                host = Interaction.InputBox("输入IP地址", "pilgrims", "");
+                flag = 0;
+            }
+            else
+            {
+                host = "127.0.0.1";
+                flag = 1;
+            }
             port = Interaction.InputBox("输入连接端口", "pilgrims", "");
             //调试代码区
             //host = "127.0.0.1";
             //port = 13579;
             //tmpname1 = "114514";
             //
-            sendd(host);
-            sendd(port.ToString());
+            if(flag == 1)
+            {
+                cmduse("sever.py " + port);
+            }
+            cmduse("link.py "+host+" "+port);
             common.t_fir=int.Parse(recvv());
             common.p[1] = Interaction.InputBox("输入名称", "pilgrims", "");
             sendd(common.p[1]);
@@ -124,7 +151,7 @@ namespace pilgrims
             //棋盘前四位分别是双方点数和血量
             if (x == 0)
             {
-                sendint[0] = 1;//第0位是是否结束 0结束
+                sendint[0] = 1;//第0位是是否结束 0结束 1继续回合
             }
             sendint[++l] = common.dead;//死亡的士兵
             for (int i = 0; i <= 1; i++)
@@ -598,11 +625,11 @@ namespace pilgrims
                     bnts[0, i, j] = bnt;
                 }
             }
-            if (common.t_fir == 1)
+            if (common.t_fir == 0)//后手
             {
                 ThreadStart startbackget = new ThreadStart(stratbackstart);
                 Thread startback = new Thread(startbackget);
-                startback.Start();
+                startback.Start();//起另一个线程接收对方数据,不影响正常访问
 
             }
             else

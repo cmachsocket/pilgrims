@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="link.py" />
+    <Content Include="sever.py" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
