@@ -13,6 +13,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Diagnostics;
+using System.Text;
+
 namespace pilgrims
 {
     /// <summary>
@@ -35,7 +37,7 @@ namespace pilgrims
         public static void sendd(string msg)//发送给python进行传输
         {
             ms++;
-            StreamWriter sr = new StreamWriter("n"+ms.ToString()+".txt");
+            StreamWriter sr = new StreamWriter("n"+ms.ToString()+".txt",false,Encoding.UTF8);
             sr.Write(msg);
             sr.Close();        
         }
@@ -54,7 +56,7 @@ namespace pilgrims
                         try//能够访问到消息
                         {
                             b = 0;//退出
-                            sr = new StreamReader("n" + ms.ToString() + ".txt");
+                            sr = new StreamReader("n" + ms.ToString() + ".txt",Encoding.UTF8);
                         }
                         catch { b = 1; }//不能访问
                     }
@@ -117,10 +119,10 @@ namespace pilgrims
             Title = "pilgrims" + common.BAN + " made by cmach_socket";
             InitializeComponent();
             common.initpai();
-            StreamReader sr = new StreamReader("player.txt");
+            StreamReader sr = new StreamReader("player.txt",Encoding.UTF8);
             common.ppai[1] = sr.ReadLine();
             sr.Close();
-            StreamReader fr = new StreamReader(common.ppai[1]);
+            StreamReader fr = new StreamReader(common.ppai[1], Encoding.UTF8);
             for (int i = 1; i < common.MAXIP; i++)
             {
                 common.paip[1, i] = int.Parse(fr.ReadLine());
@@ -128,12 +130,12 @@ namespace pilgrims
             fr.Close();
 
         }
-        public static void gameover(int x)
+        public static void gameover(int x)//x为胜者
         {
             string prmess = "游戏结束!" + common.p[x] + "胜利!";
             MessageBox.Show(prmess, "pilgrims");
             string last = DateTime.Now.ToString();
-            StreamWriter sw = File.AppendText("result.txt");
+            StreamWriter sw = new StreamWriter("result.txt",true,Encoding.UTF8);
             last += " " + common.p[x] + "战胜了" + common.p[x ^ 1];
             sw.WriteLine(last);
             sw.Close();
@@ -151,7 +153,7 @@ namespace pilgrims
             //棋盘前四位分别是双方点数和血量
             if (x == 0)
             {
-                sendint[0] = 1;//第0位是是否结束 0结束 1继续回合
+                sendint[0] = 1;//第0位是是否结束 1结束 0继续回合
             }
             sendint[++l] = common.dead;//死亡的士兵
             for (int i = 0; i <= 1; i++)
@@ -205,10 +207,10 @@ namespace pilgrims
             sendd(exchange);
             sendd(common.tostr(sendint));
             //是否死亡
-            if (common.pxue[1] == 0 || common.pxue[0] == 0)
+            if (common.pxue[1] <= 0 || common.pxue[0] <= 0)
             {
 
-                gameover(common.pxue[0] == 0 ? 1 : 0);
+                gameover(common.pxue[0] <= 0 ? 1 : 0);//这里传递胜者
             }
         }
         public static void recvmsg()//接收消息
@@ -232,7 +234,7 @@ namespace pilgrims
                     common.pwuqi[i].p = sendint[++l];
                     common.kqian[i] = sendint[++l];
                     if (common.pwuqi[i].bian > 0)
-                        common.pwuqi[i].name = common.FNA[common.pwuqi[i].bian - 1000];
+                        common.pwuqi[i].name = common.WNA[common.pwuqi[i].bian - 2000];
                     for (int j = 0; j <= common.MAXP - 1; j++)
                     {
                          common.k[i, j] = sendint[++l];
@@ -281,9 +283,9 @@ namespace pilgrims
                 }
                 flip();
                 //判断死亡
-                if (common.pxue[1] == 0 || common.pxue[0] == 0)
+                if (common.pxue[1] <= 0 || common.pxue[0] <= 0)
                 {
-                    gameover(common.pxue[0] == 0 ? 1 : 0);
+                    gameover(common.pxue[0] <= 0 ? 1 : 0);
 
                 }
                 //对方结束了回合

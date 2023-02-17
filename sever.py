@@ -6,14 +6,28 @@ print("")
 co=[]
 post=int(sys.argv[1])
 def sendmsg(so,s):
-    so.sendall(str(len(s)).rjust(1024).encode())
-    so.sendall(s.encode())
-    print("sended the str. There is "+str(len(s))+"bytes in total")
+    tmp=s.encode()
+    so.sendall((len(tmp)).to_bytes(1024,'big'))
+    so.sendall(tmp)
+    print("sent the str. There is "+str(len(tmp))+"bytes in total")
 def recvmsg(so):
-    tmp=so.recv(1024)
-    s=so.recv(int(tmp)).decode() 
-    print("received the str. There is "+str(len(s))+"bytes in total")
-    return s
+    lenth=0
+    tmpl=b''
+    while(lenth<1024):
+        s=so.recv(1024-lenth)
+        lenth+=len(s)
+        print("  trying to get length. There is "+str(lenth)+"bytes in total,and it was expected to receive 1024 bytes.")
+        tmpl+=s
+    tmp=int.from_bytes(tmpl,'big')
+    lenth=0
+    ans=""
+    while(lenth<tmp):
+        s=so.recv(tmp-lenth)
+        lenth+=len(s)
+        print("    received the str. There is "+str(lenth)+"bytes in total,and it was expected to receive "+str(tmp)+"bytes.")
+        ans+=s.decode()
+    print("the function was completed.")
+    return ans
 def main():
    global co,post
    soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -39,14 +53,13 @@ def main():
    while True:
     try:
         tmp=recvmsg(co[now])
-        sendmsg(co[now^1])
+        sendmsg(co[now^1],tmp)
         tmp=recvmsg(co[now])
-        sendmsg(co[now^1])
-        if(tmp.split("\n")[0]=="1"):
-            print("the player changed the return.")
+        sendmsg(co[now^1],tmp)
+        if(int(tmp[1])==1):
+            print("the player changed the turn.")
             now^=1
     except:
-        f=open("link_log.txt","a+")
-        f.write(traceback.format_exc())
+        pass
 if __name__=="__main__":
     main()
