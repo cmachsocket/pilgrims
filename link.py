@@ -1,4 +1,4 @@
-﻿import socket ,os,sys,traceback
+﻿import socket ,os,sys,time
 print("start with ",end=" ")
 for i in sys.argv:
     print(i,end=" ")
@@ -97,6 +97,7 @@ def recvv():
                 except:
                     b=1
             break
+    time.sleep(0.05)
     tmps=f.read()
     f.close()
     os.remove("n"+str(ms)+".txt")

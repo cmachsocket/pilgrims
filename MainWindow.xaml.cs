@@ -64,6 +64,7 @@ namespace pilgrims
                     break;
                 }
             }
+            Thread.Sleep(50);
             //处理
             string msg=sr.ReadToEnd();
             sr.Close();
@@ -73,11 +74,6 @@ namespace pilgrims
         }
         public static void cmduse(string str)
         {
-            /*
-            ThreadStart startbackget = new ThreadStart(stratbackstart);
-            Thread startback = new Thread(startbackget);
-            startback.Start();
-            */
             Thread sb = new Thread(new ParameterizedThreadStart(sys));
             sb.Start(str);
         }
@@ -85,7 +81,6 @@ namespace pilgrims
         public static void sys(object s)
         {
             System.Diagnostics.Process.Start("python\\\\python.exe", s.ToString());
-            //MessageBox.Show(p.StandardOutput.ReadToEnd());
 
         }
         public MainWindow()

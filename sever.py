@@ -1,4 +1,4 @@
-import socket,sys,random,traceback
+import socket,sys,random
 print("start with ",end=" ")
 for i in sys.argv:
     print(i,end=" ")
