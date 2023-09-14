@@ -32,15 +32,15 @@ namespace pilgrims
             .FirstOrDefault(window => window is MainWindow) as MainWindow;
             string[] tmp = combo.SelectedItem.ToString().Split(' ');
             var i = int.Parse(tmp[0]);
-            if (_mainWindow.qi.paip[1, i] == 0)
+            if (_mainWindow.qi.paip[1, i] == "")
             {
                 _mainWindow.qi.prtext = "此队伍格子没有有效士员编号";
                 common.clean(ref _mainWindow.qi, "状态");
                 return;
             }
-            if (_mainWindow.qi.paip[1, i] >= 1000 && _mainWindow.qi.paip[1, i] < 2000)
+            if (_mainWindow.qi.listty[_mainWindow.qi.paip[1, i]] == "fashu")
             {
-                if (_mainWindow.qi.ndian[1] - _mainWindow.qi.fslist[_mainWindow.qi.paip[1, i] - 1000].dianshu < 0)
+                if (_mainWindow.qi.ndian[1] - _mainWindow.qi.fslist[_mainWindow.qi.paip[1, i]].dianshu < 0)
                 {
                     _mainWindow.qi.prtext = "点数不够";
                     common.clean(ref _mainWindow.qi, "状态");
@@ -55,9 +55,9 @@ namespace pilgrims
                 common.addfs(ref _mainWindow.qi,_mainWindow.qi.paip[1, i], 1);
                 _mainWindow.flip();
             }
-            else if (_mainWindow.qi.paip[1, i] >= 2000)
+            else if (_mainWindow.qi.listty[_mainWindow.qi.paip[1, i]] == "wuqi")
             {
-                if (_mainWindow.qi.ndian[1] - _mainWindow.qi.wqlist[_mainWindow.qi.paip[1, i] - 2000].dianshu < 0)
+                if (_mainWindow.qi.ndian[1] - _mainWindow.qi.wqlist[_mainWindow.qi.paip[1, i]].dianshu < 0)
                 {
                     _mainWindow.qi.prtext = "点数不够";
                     common.clean(ref _mainWindow.qi, "状态");
@@ -66,7 +66,7 @@ namespace pilgrims
                 common.addwq(ref _mainWindow.qi,_mainWindow.qi.paip[1, i], 1);
                 _mainWindow.flip();
             }
-            else
+            else if (_mainWindow.qi.listty[_mainWindow.qi.paip[1, i]] == "xiaobin")
             {
                 if (_mainWindow.qi.ndian[1] - _mainWindow.qi.xblist[_mainWindow.qi.paip[1, i]].dianshu < 0)
                 {

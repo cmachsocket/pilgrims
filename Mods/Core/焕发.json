@@ -1,0 +1,9 @@
+{
+  "type": "fashu",
+  "name": "焕发",
+  "dianshu": 3,
+  "dllpath": "Core\\Core.dll",
+  "classname": "Class1",
+  "fa": "fa5", 
+  "show":1
+}

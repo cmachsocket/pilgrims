@@ -1,0 +1,26 @@
+{
+  "type": "xiaobin",
+  "name": "卫兵",
+  "gongji": 5, //gongji 攻击
+  "fanci": 5, //fanci 反刺
+  "xue": 10, //xue 血量
+  "gjcishu": 1, //gjcishu 攻击次数
+  "shecheng": 1, //shecheng 射程
+  "dun": 0, //dun 盾
+  "lingjcs": 0, //lingjcs 临时攻击次数
+  "dianshu": 5, //dianshu 点数
+  "xixue": 0, //xixue 吸血
+  "boolpojia": 0, //boolpojia 是否破甲
+  "paishu": 1, //paishu 排数
+  "qianfeng": 0, //qianfeng 是否前锋
+  "boolpojia": 0, //boolpojia 是否攻击
+  "bihu": 0, //bihu 是否庇护
+  "dianji": 0, //dianji 是否电击
+  "maxxue": 10,//maxxue 最大血量
+  "dllpath": "Core\\Core.dll",
+  "classname": "Class1",
+  "yuan": "tmpyuan",
+  "ji": "tmpji",
+  "hui": "tmphui", 
+  "show":1
+}

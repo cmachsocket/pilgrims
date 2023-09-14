@@ -1,0 +1,26 @@
+{
+  "type": "xiaobin",
+  "name": "诙谐",
+  "gongji": 5,
+  "fanci": 5,
+  "xue": 10,
+  "gjcishu": 1,
+  "shecheng": 1,
+  "dun": 0,
+  "lingjcs": 0,
+  "dianshu": 15,
+  "xixue": 0,
+  "paishu": 1,
+  "qianfeng": 0,
+  "boolpojia": 0,
+  "bihu": 0,
+  "dianji": 0,
+  "maxxue": 10,
+  "dllpath": "Core\\Core.dll",
+  "classname": "Class1",
+  "yuan": "tmpyuan",
+  "ji": "ji23",
+  "hui": "tmphui", 
+  "show":1
+}
+

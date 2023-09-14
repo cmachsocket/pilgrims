@@ -56,6 +56,8 @@ def main():
         sendmsg(co[now^1],tmp)
         tmp=recvmsg(co[now])
         sendmsg(co[now^1],tmp)
+        tmp=recvmsg(co[now])
+        sendmsg(co[now^1],tmp)
         if(int(tmp[1])==1):
             print("the player changed the turn.")
             now^=1

@@ -1,0 +1,10 @@
+{
+  "type": "wuqi",
+  "name": "步枪",
+  "naiju": 2,
+  "dianshu": 5,
+  "dllpath": "Core\\Core.dll",
+  "classname": "Class1",
+  "use": "wu1", 
+  "show":1
+}

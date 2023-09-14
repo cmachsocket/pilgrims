@@ -14,6 +14,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -56,6 +56,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
@@ -77,7 +80,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Class1.cs" />
+    <Compile Include="..\cmachsocket\pil\Class1.cs">
+      <Link>Class1.cs</Link>
+    </Compile>
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
@@ -117,6 +122,37 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include=".editorconfig" />
+    <None Include="Mods\Core\亡灵法师.json" />
+    <None Include="Mods\Core\仁心.json" />
+    <None Include="Mods\Core\利矛.json" />
+    <None Include="Mods\Core\双生.json" />
+    <None Include="Mods\Core\叛军.json" />
+    <None Include="Mods\Core\坚石.json" />
+    <None Include="Mods\Core\安德拉.json" />
+    <None Include="Mods\Core\彼岸.json" />
+    <None Include="Mods\Core\忍.json" />
+    <None Include="Mods\Core\急救剂.json" />
+    <None Include="Mods\Core\惊扰.json" />
+    <None Include="Mods\Core\断罪.json" />
+    <None Include="Mods\Core\步枪.json" />
+    <None Include="Mods\Core\卫兵.json" />
+    <None Include="Mods\Core\暗杀.json" />
+    <None Include="Mods\Core\清心.json" />
+    <None Include="Mods\Core\火击.json" />
+    <None Include="Mods\Core\炼狱.json" />
+    <None Include="Mods\Core\焕发.json" />
+    <None Include="Mods\Core\爆兵.json" />
+    <None Include="Mods\Core\狡.json" />
+    <None Include="Mods\Core\猎手.json" />
+    <None Include="Mods\Core\破阵.json" />
+    <None Include="Mods\Core\禁忌术.json" />
+    <None Include="Mods\Core\禅.json" />
+    <None Include="Mods\Core\突击兵.json" />
+    <None Include="Mods\Core\缄默.json" />
+    <None Include="Mods\Core\背刺.json" />
+    <None Include="Mods\Core\诙谐.json" />
+    <None Include="Mods\Core\风暴.json" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -140,6 +176,9 @@
   <ItemGroup>
     <Content Include="link.py" />
     <Content Include="sever.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="python\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

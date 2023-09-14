@@ -122,7 +122,7 @@ namespace pilgrims
             StreamReader fr = new StreamReader(qi.ppai[1], Encoding.UTF8);
             for (int i = 1; i < common.MAXIP; i++)
             {
-                qi.paip[1, i] = int.Parse(fr.ReadLine());
+                qi.paip[1, i] = fr.ReadLine();
             }
             fr.Close();
 
@@ -143,6 +143,7 @@ namespace pilgrims
         {
             int[] sendint = new int[common.MAXI];//要发送的棋盘一维化
             string exchange = qi.fatext;//copy要发送的信息
+            string extrastr = ""; //额外的字符串信息
             int ji = 0;
             qi.fatext = "";
             int l = 4;
@@ -152,14 +153,18 @@ namespace pilgrims
             {
                 sendint[0] = 1;//第0位是是否结束 1结束 0继续回合
             }
-            sendint[++l] = qi.dead;//死亡的士兵
+            extrastr += "$" + qi.dead;//死亡的士兵
             for (int i = 0; i <= 1; i++)
             {
                 sendint[++l] = qi.pwuqi[i].naiju;
                 sendint[++l] = qi.pwuqi[i].dianshu;
-                sendint[++l] = qi.pwuqi[i].bian;
-                sendint[++l] = qi.pwuqi[1].p;
+                sendint[++l] = qi.pwuqi[i].show;
+                extrastr += "$" + qi.pwuqi[i].name;
+                extrastr += "$" + qi.pwuqi[i].dll;
+                extrastr += "$" + qi.pwuqi[i].cla;
+                extrastr += "$" + qi.pwuqi[i].uses;
                 sendint[++l] = qi.kqian[i];
+                
                 for(int j = 0; j <=common.MAXP-1; j++)
                 {
                     sendint[++l] = qi.k[i, j]; 
@@ -183,17 +188,20 @@ namespace pilgrims
                         sendint[++l] = qi.bing[k, i, j].boolpojia;
                         sendint[++l] = qi.bing[k, i, j].paishu;
                         sendint[++l] = qi.bing[k, i, j].qianfeng;
-                        sendint[++l] = qi.bing[k, i, j].boolji;
                         sendint[++l] = qi.bing[k, i, j].bihu;
                         sendint[++l] = qi.bing[k, i, j].dianji;
-                        sendint[++l] = qi.bing[k, i, j].bian;
                         sendint[++l] = qi.bing[k, i, j].a;
                         sendint[++l] = qi.bing[k, i, j].b;
                         sendint[++l] = qi.bing[k, i, j].c;
                         sendint[++l] = qi.bing[k, i, j].maxxue;
-                        sendint[++l] = qi.bing[k, i, j].yuan;
-                        sendint[++l] = qi.bing[k, i, j].ji;
-                        sendint[++l] = qi.bing[k, i, j].hui;
+                        sendint[++l] = qi.bing[k, i, j].show;
+                        extrastr += "$" + qi.bing[k, i, j].name;
+                        extrastr += "$" + qi.bing[k, i, j].dll;
+                        extrastr += "$" + qi.bing[k, i, j].cla;
+                        extrastr += "$" + qi.bing[k, i, j].yuan;
+                        extrastr += "$" + qi.bing[k, i, j].ji;
+                        extrastr += "$" + qi.bing[k, i, j].hui;
+
                         for (int r = 0; r < 10; r++)
                         {
                             sendint[++l] = qi.bing[k, i, j].tmp[r];
@@ -201,8 +209,10 @@ namespace pilgrims
                     }
                 }
             }//大棋盘
+
             sendd(exchange);
             sendd(common.tostr(sendint));
+            sendd(extrastr);
             //是否死亡
             if (qi.pxue[1] <= 0 || qi.pxue[0] <= 0)
             {
@@ -219,19 +229,25 @@ namespace pilgrims
                 Array.Clear(sendint, 0, sendint.Length - 1);
                 qi.prtext=recvv();
                 common.toint(recvv(), ref sendint);
+                string extrastr = recvv();
+                string[] extraarr = extrastr.Split('$');
                 //解析消息
-                int l = 4;
+                int l = 4, ll = 0;
                 qi.ndian[0] = sendint[1]; qi.ndian[1] = sendint[2]; qi.pxue[0] = sendint[3]; qi.pxue[1] = sendint[4];
-                qi.dead = sendint[++l];
+                qi.dead = extraarr[++l];
                 for (int i = 1; i >= 0; i--)
                 {
                     qi.pwuqi[i].naiju = sendint[++l];
                     qi.pwuqi[i].dianshu = sendint[++l];
-                    qi.pwuqi[i].bian = sendint[++l];
-                    qi.pwuqi[i].p = sendint[++l];
+                    qi.pwuqi[i].show = sendint[++l];
                     qi.kqian[i] = sendint[++l];
-                    if (qi.pwuqi[i].bian > 0)
-                        qi.pwuqi[i].name = common.WNA[qi.pwuqi[i].bian - 2000];
+                    qi.pwuqi[i].name = extraarr[++ll];
+                    qi.pwuqi[i].dll = extraarr[++ll];
+                    qi.pwuqi[i].cla = extraarr[++ll];
+                    qi.pwuqi[i].uses = extraarr[++ll];
+                    //if (qi.pwuqi[i].bian > 0)
+                    //    qi.pwuqi[i].name = common.WNA[qi.pwuqi[i].bian - 2000];
+                    // 需要修改
                     for (int j = 0; j <= common.MAXP - 1; j++)
                     {
                          qi.k[i, j] = sendint[++l];
@@ -255,23 +271,27 @@ namespace pilgrims
                             qi.bing[k, i, j].boolpojia = sendint[++l];
                             qi.bing[k, i, j].paishu = sendint[++l];
                             qi.bing[k, i, j].qianfeng = sendint[++l];
-                            qi.bing[k, i, j].boolji = sendint[++l];
                             qi.bing[k, i, j].bihu = sendint[++l];
                             qi.bing[k, i, j].dianji = sendint[++l];
-                            qi.bing[k, i, j].bian = sendint[++l];
                             qi.bing[k, i, j].a = sendint[++l];
                             qi.bing[k, i, j].b = sendint[++l];
                             qi.bing[k, i, j].c = sendint[++l];
                             qi.bing[k, i, j].maxxue = sendint[++l];
-                            qi.bing[k, i, j].yuan = sendint[++l];
-                            qi.bing[k, i, j].ji = sendint[++l];
-                            qi.bing[k, i, j].hui = sendint[++l];
+                            qi.bing[k, i, j].show = sendint[++l];
+                            qi.bing[k, i, j].name = extraarr[++ll];
+                            qi.bing[k, i, j].dll = extraarr[++ll];
+                            qi.bing[k, i, j].cla = extraarr[++ll];
+                            qi.bing[k, i, j].yuan = extraarr[++ll];
+                            qi.bing[k, i, j].ji = extraarr[++ll];
+                            qi.bing[k, i, j].hui = extraarr[++ll];  
+                               
                             for (int r = 0; r < 10; r++)
                             {
                                 sendint[++l] = qi.bing[k, i, j].tmp[r];
                             }
-                            qi.bing[k, i, j].name = common.NAME[qi.bing[k, i, j].bian > 0 ? qi.bing[k, i, j].bian : -qi.bing[k, i, j].bian];
-                            if (qi.bing[k, i, j].bian != 0)
+                            //qi.bing[k, i, j].name = common.NAME[qi.bing[k, i, j].bian > 0 ? qi.bing[k, i, j].bian : -qi.bing[k, i, j].bian];
+                            //需要修改
+                            if (qi.bing[k, i, j].name != "")
                             {
                                 qi.bing[k, i, j].a ^= 1;
                             }
@@ -303,7 +323,7 @@ namespace pilgrims
 
 
                         bnts[i, j, l].Dispatcher.Invoke(new Action(() => { bnts[i, j, l].Content = "空"; }));//抄的,说是什么线程安全
-                        if (qi.bing[i, j, l].bian != 0)
+                        if (qi.bing[i, j, l].name != "")
                         {
                             bnts[i, j, l].Dispatcher.Invoke(new Action(() => { bnts[i, j, l].Content = qi.bing[i, j, l].name; }));
                         }
@@ -361,28 +381,37 @@ namespace pilgrims
                 string add = "";
                 for (int i = 1; i < common.MAXIP; i++)
                 {
-                    if (qi.paip[1, i] > 0)
+                    if (qi.listty[qi.paip[1, i]]=="fashu")
                     {
-                        if (qi.paip[1, i] >= 1000 && qi.paip[1, i] < 2000)
+                        if(qi.fslist[qi.paip[1, i]].show == 0)
                         {
-                            add = i.ToString() + " " +
-                                  qi.fslist[qi.paip[1, i] - 1000].name + " " +
-                                  qi.fslist[qi.paip[1, i] - 1000].dianshu.ToString() + "点";
+                            continue;
                         }
-                        else if (qi.paip[1, i] >= 2000)
-                        {
-                            add = i.ToString() + " " +
-                                  qi.wqlist[qi.paip[1, i] - 2000].name + " " +
-                                  qi.wqlist[qi.paip[1, i] - 2000].dianshu.ToString() + "点";
-                        }
-                        else
-                        {
-                            add = i.ToString() + " " +
-                                  qi.xblist[qi.paip[1, i]].name + " " +
-                                  qi.xblist[qi.paip[1, i]].dianshu.ToString() + "点";
-                        }
-                        win.combo.Items.Add(add);
+                        add = i.ToString() + " " +
+                              qi.fslist[qi.paip[1, i]].name + " " +
+                              qi.fslist[qi.paip[1, i]].dianshu.ToString() + "点";
                     }
+                    else if (qi.listty[qi.paip[1, i]] == "wuqi")
+                    {
+                        if (qi.wqlist[qi.paip[1, i]].show == 0)
+                        {
+                            continue;
+                        }
+                        add = i.ToString() + " " +
+                              qi.wqlist[qi.paip[1, i]].name + " " +
+                              qi.wqlist[qi.paip[1, i]].dianshu.ToString() + "点";
+                    }
+                    else if(qi.listty[qi.paip[1, i]] == "xiaobin")
+                    {
+                        if (qi.xblist[qi.paip[1, i]].show == 0)
+                        {
+                            continue;
+                        }
+                        add = i.ToString() + " " +
+                              qi.xblist[qi.paip[1, i]].name + " " +
+                              qi.xblist[qi.paip[1, i]].dianshu.ToString() + "点";
+                    }
+                    win.combo.Items.Add(add);
                 }
                 win.Show();
             }
@@ -409,7 +438,7 @@ namespace pilgrims
                     qi.prtext = "第一回合无法攻击";
                     return;
                 }
-                common.setmode(ref qi,2, common.gj1, "请选择攻击对象");
+                common.setmode(ref qi,4, new backto("","",""), "请选择攻击对象");
                 flip();
             }
 
@@ -481,7 +510,7 @@ namespace pilgrims
             string[] tob = the_b.Name.ToString().Split('_');
             var a = new abc(int.Parse(tob[1]), int.Parse(tob[2]), int.Parse(tob[3]));
             var tbing = qi.bing[a.a, a.b, a.c];
-            if (tbing.bian == 0)
+            if (tbing.name == "")
             {
                 shux.Text = "空";
                 return;
@@ -506,6 +535,7 @@ namespace pilgrims
         //mode 1 空闲中
         //mode 2 选择攻击
         //mode 3 选择技能
+        //mode 4 选择攻击对象
         private void bnt_cil(object sender, MouseButtonEventArgs e)
         {
 
@@ -518,13 +548,17 @@ namespace pilgrims
                     return;
                 }
 
-                else if (qi.mode == 2 || qi.mode == 3)
+                else if (qi.mode >= 2 || qi.mode <= 4)
                 {
                     int tmp;
                     if (the_b.Name.IndexOf("n") >= 0)
                     {
                         tmp = the_b.Name[2] - '0';
-                        qi.bback(ref qi,tmp == 1 ? -1 : -2, 0, 0);
+                        if (qi.mode == 4)
+                        {
+                            common.gj1(ref qi, tmp == 1 ? -1 : -2, 0, 0);
+                        }
+                        else qi=common.usedll(qi,qi.bback,tmp == 1 ? -1 : -2, 0, 0);
                         sendmsg(1);
                         flip();
                         return;
@@ -533,14 +567,22 @@ namespace pilgrims
                     {
 
                         tmp = the_b.Name[1] - '0';
-                        qi.bback(ref qi, tmp == 1 ? -3 : -4, 0, 0);
+                        if (qi.mode == 4)
+                        {
+                            common.gj1(ref qi, tmp == 1 ? -3 : -4, 0, 0);
+                        }
+                        else qi = common.usedll(qi, qi.bback, tmp == 1 ? -3 : -4, 0, 0);
                         sendmsg(1);
                         flip();
                         return;
                     }
                     string[] tob = the_b.Name.ToString().Split('_');
                     var a = new abc(int.Parse(tob[1]), int.Parse(tob[2]), int.Parse(tob[3]));
-                    qi.bback(ref qi,a.a, a.b, a.c);
+                    if (qi.mode == 4)
+                    {
+                        common.gj1(ref qi, a.a, a.b, a.c);
+                    }
+                    else qi = common.usedll(qi, qi.bback, a.a, a.b, a.c);
                     sendmsg(1);
                     flip();
 

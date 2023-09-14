@@ -1,0 +1,10 @@
+{
+  "type": "wuqi",
+  "name": "急救剂",
+  "naiju": 2,
+  "dianshu": 5,
+  "dllpath": "Core\\Core.dll",
+  "classname": "Class1",
+  "use": "wu2", 
+  "show":1
+}

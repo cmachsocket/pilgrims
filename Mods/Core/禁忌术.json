@@ -1,0 +1,9 @@
+{
+  "type": "fashu",
+  "name": "禁忌术",
+  "dianshu": 0,
+  "dllpath": "Core\\Core.dll",
+  "classname": "Class1",
+  "fa": "fa3", 
+  "show":1
+}

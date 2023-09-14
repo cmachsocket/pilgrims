@@ -61,6 +61,8 @@ def main():
                 sendd(tmp)
                 tmp=recvmsg(soc)
                 sendd(tmp)
+                tmp=recvmsg(soc)
+                sendd(tmp)
                 if int(tmp[1])==1:
                     print("changed the turn")
                     fir=1
@@ -68,6 +70,8 @@ def main():
                 pass
         while fir==1:
             try:
+                tmp=recvv()
+                sendmsg(soc,tmp)
                 tmp=recvv()
                 sendmsg(soc,tmp)
                 tmp=recvv()
